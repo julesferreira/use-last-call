@@ -1,31 +1,28 @@
-import { useRef, useEffect } from "react";
+import { useEffect } from "react";
 
-function useListener<K extends keyof DocumentEventMap>(
+function useListener(
   target: Document,
-  event: K,
-  handler: (event: DocumentEventMap[K]) => void
+  event: "visibilitychange",
+  handler: (e: DocumentEventMap[typeof event]) => void
 ): void;
-function useListener<K extends keyof WindowEventMap>(
+function useListener(
   target: Window,
-  event: K,
-  handler: (event: WindowEventMap[K]) => void
+  event: "pagehide" | "beforeunload",
+  handler: (e: WindowEventMap[typeof event]) => void
 ): void;
-function useListener<K extends keyof (DocumentEventMap & WindowEventMap)>(
+function useListener(
   target: Document | Window,
-  event: K,
-  handler: (event: (DocumentEventMap & WindowEventMap)[K]) => void
+  event: string,
+  handler: EventListener
 ) {
-  const handlerRef = useRef(handler);
-
   useEffect(() => {
-    handlerRef.current = handler;
-  }, [handler]);
+    if (!("on" + event in target)) {
+      return;
+    }
 
-  useEffect(() => {
-    const listener = (ev: any) => handlerRef.current(ev);
-    target.addEventListener(event, listener);
-    return () => target.removeEventListener(event, listener);
-  }, [event, target]);
+    target.addEventListener(event, handler);
+    return () => target.removeEventListener(event, handler);
+  }, [target, event, handler]);
 }
 
 export { useListener };
