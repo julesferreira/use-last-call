@@ -18,6 +18,18 @@ function useLastCall(fn: (e: Event) => void) {
     fnRef.current(e);
   }, []);
 
+  const handleBeforeUnload = useCallback(
+    (e: BeforeUnloadEvent) => {
+      setTimeout(() => {
+        if (e.defaultPrevented || e.returnValue.length > 0) {
+          locked.current = false;
+        }
+      });
+      lastCall(e);
+    },
+    [lastCall]
+  );
+
   const handleVisibilityChange = useCallback(
     (e: Event) => {
       if (document.visibilityState === "visible") {
@@ -30,7 +42,7 @@ function useLastCall(fn: (e: Event) => void) {
   );
 
   useListener(window, "pagehide", lastCall);
-  useListener(window, "beforeunload", lastCall);
+  useListener(window, "beforeunload", handleBeforeUnload);
   useListener(document, "visibilitychange", handleVisibilityChange);
 }
 

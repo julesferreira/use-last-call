@@ -73,6 +73,41 @@ describe("useLastCall", () => {
 
     setVisibilityState(document, originalVisibilityState);
   });
+  describe("unlocks after canceled unload", () => {
+    test.each([
+      { key: "defaultPrevented", value: true },
+      { key: "returnValue", value: "foo" },
+    ])("$key: $value", ({ key, value }) => {
+      jest.useFakeTimers();
+
+      const cb = jest.fn((e: Event) => e.type);
+      renderHook(() => useLastCall(cb));
+
+      // unload prevented
+      window.dispatchEvent(
+        Object.defineProperty(new Event("beforeunload"), key, {
+          value,
+        })
+      );
+      // allow mutex to unlock
+      jest.runOnlyPendingTimers();
+
+      // unload successful
+      window.dispatchEvent(new Event("beforeunload"));
+      // mutex remains locked
+      jest.runOnlyPendingTimers();
+
+      // locked
+      window.dispatchEvent(new Event("beforeunload"));
+      jest.runOnlyPendingTimers();
+
+      expect(cb).toHaveBeenCalledTimes(2);
+      expect(cb).toHaveNthReturnedWith(1, "beforeunload");
+      expect(cb).toHaveNthReturnedWith(2, "beforeunload");
+
+      jest.useRealTimers();
+    });
+  });
 });
 
 function setVisibilityState(doc: Document, state: VisibilityState) {

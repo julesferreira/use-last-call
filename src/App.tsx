@@ -1,11 +1,24 @@
 import { useEffect, useState } from "react";
 import { useLastCall } from "./useLastCall";
 
+function cancelUnload(e: BeforeUnloadEvent) {
+  e.preventDefault();
+  e.returnValue = "";
+}
+
 function App() {
   useLastCall((e) => {
     localStorage.setItem("useLastCall", e.type);
     setCount(0);
   });
+
+  const [unloadCanceled, setUnloadCanceled] = useState(true);
+  useEffect(() => {
+    if (unloadCanceled) {
+      window.addEventListener("beforeunload", cancelUnload);
+      return () => window.removeEventListener("beforeunload", cancelUnload);
+    }
+  }, [unloadCanceled]);
 
   const [count, setCount] = useState(0);
   useEffect(() => {
@@ -19,6 +32,14 @@ function App() {
       <p>
         <strong>{count}</strong> <em>counts</em> since <code>useLastCall</code>
       </p>
+      <label>
+        <input
+          type="checkbox"
+          checked={unloadCanceled}
+          onChange={() => setUnloadCanceled((prev) => !prev)}
+        />
+        attempt to cancel unload
+      </label>
     </div>
   );
 }
