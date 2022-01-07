@@ -34,6 +34,20 @@ describe("useLastCall", () => {
     expect(cb).toHaveBeenCalledTimes(1);
     expect(cb).toHaveReturnedWith("beforeunload");
   });
+  test("ignores invalid visibility states", () => {
+    const originalVisibilityState = document.visibilityState;
+    const cb = jest.fn((e: Event) => e.type);
+    renderHook(() => useLastCall(cb));
+
+    // @ts-expect-error deprecated visibilityState
+    setVisibilityState(document, "prerender");
+    document.dispatchEvent(new Event("visibilitychange"));
+    window.dispatchEvent(new Event("beforeunload"));
+    expect(cb).toHaveBeenCalledTimes(1);
+    expect(cb).toHaveReturnedWith("beforeunload");
+
+    setVisibilityState(document, originalVisibilityState);
+  });
   test("unlocks after return to tab", () => {
     const originalVisibilityState = document.visibilityState;
     const cb = jest.fn((e: Event) => e.type);
