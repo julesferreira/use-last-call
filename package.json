@@ -21,13 +21,18 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "test:types": "tsc --watch",
-    "test:coverage": "react-scripts test --coverage",
+    "test:coverage": "react-scripts test --coverage --watchAll=false",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
+    ]
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "<rootDir>/src/use[A-Z]*.[jt]s?(x)"
     ]
   },
   "browserslist": {
