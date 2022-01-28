@@ -6,13 +6,49 @@ function cancelUnload(e: BeforeUnloadEvent) {
   e.returnValue = "";
 }
 
-function App() {
-  useLastCall((e) => {
-    localStorage.setItem("useLastCall", e.type);
-    setCount(0);
+type EventList = [string, number][];
+type PushEvent = (e: Event) => void;
+function useEventLogger(): [EventList, PushEvent] {
+  const [events, setEvents] = useState<EventList>(() => {
+    try {
+      const item = localStorage.getItem("useLastCall");
+      if (item === null) {
+        throw new Error("key not found");
+      }
+      return JSON.parse(item);
+    } catch (_) {
+      return [];
+    }
   });
 
-  const [unloadCanceled, setUnloadCanceled] = useState(true);
+  const pushEvent: PushEvent = (e: Event) => {
+    setEvents((prevEvents) => {
+      return [[e.type, Date.now()], ...prevEvents].slice(0, 5) as EventList;
+    });
+  };
+
+  useEffect(() => {
+    localStorage.setItem("useLastCall", JSON.stringify(events));
+  }, [events]);
+
+  return [events, pushEvent];
+}
+
+function App() {
+  useLastCall((e) => {
+    pushEvent(e);
+    setNow(Date.now());
+  });
+  const [events, pushEvent] = useEventLogger();
+
+  const [now, setNow] = useState(Date.now());
+  const [unloadCanceled, setUnloadCanceled] = useState(false);
+
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  });
+
   useEffect(() => {
     if (unloadCanceled) {
       window.addEventListener("beforeunload", cancelUnload);
@@ -20,18 +56,16 @@ function App() {
     }
   }, [unloadCanceled]);
 
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    const id = setInterval(() => setCount((prev) => prev + 1), 1000);
-    return () => clearInterval(id);
-  });
-
   return (
     <div>
       <p>`useLastCall` hook</p>
-      <p>
-        <strong>{count}</strong> <em>counts</em> since <code>useLastCall</code>
-      </p>
+      <div>
+        {events.map(([e, t]) => (
+          <p key={e + t}>
+            {e} {Math.floor((now - t) / 1000)}s ago
+          </p>
+        ))}
+      </div>
       <label>
         <input
           type="checkbox"
