@@ -57,23 +57,38 @@ function App() {
   }, [unloadCanceled]);
 
   return (
-    <div>
-      <p>`useLastCall` hook</p>
-      <div>
-        {events.map(([e, t]) => (
-          <p key={e + t}>
-            {e} {Math.floor((now - t) / 1000)}s ago
-          </p>
-        ))}
-      </div>
-      <label>
-        <input
-          type="checkbox"
-          checked={unloadCanceled}
-          onChange={() => setUnloadCanceled((prev) => !prev)}
-        />
-        attempt to cancel unload
-      </label>
+    <div className="mt-8 prose prose-invert mx-auto lg:prose-lg">
+      <h1>
+        <code>useLastCall</code> hook
+      </h1>
+      <table>
+        <thead>
+          <tr>
+            <th>triggered by</th>
+            <th>seconds ago</th>
+          </tr>
+        </thead>
+        <tbody>
+          {events.map(([e, t]) => (
+            <tr key={e + t}>
+              <td>
+                <code>{e}</code>
+              </td>
+              <td>{Math.floor((now - t) / 1000)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <h4>
+        <label>
+          <input
+            type="checkbox"
+            checked={unloadCanceled}
+            onChange={() => setUnloadCanceled((prev) => !prev)}
+          />
+          &nbsp; attempt to cancel unload
+        </label>
+      </h4>
     </div>
   );
 }
