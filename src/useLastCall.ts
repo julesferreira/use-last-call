@@ -1,7 +1,7 @@
 import { useRef, useEffect, useCallback } from "react";
 import { useListener } from "./useListener";
 
-function useLastCall(fn: (e: Event) => void) {
+function useLastCall(fn: (event: Event) => void) {
   const fnRef = useRef(fn);
   const locked = useRef(false);
 
