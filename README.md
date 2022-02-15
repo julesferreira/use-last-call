@@ -12,6 +12,8 @@ Web browsers can be _weird_ about communicating the unloading of pages to develo
 - Security updates opt for _"Restart Now"_ over _"Remind me Later"_
 - Someone using [Safari] closes a tab . . . **(」° ロ °)」**
 
+_Try these (and your users' favorite non-traditional exits) in [the demo app]_
+
 ## Install
 
 ```sh
@@ -88,4 +90,5 @@ function App() {
 [`visibilitychange`]: https://developer.mozilla.org/docs/Web/API/Document/visibilitychange_event
 [react hook]: https://reactjs.org/docs/hooks-intro.html
 [safari]: https://bugs.webkit.org/buglist.cgi?quicksearch=151610%20194897
+[the demo app]: https://julesferreira.github.io/use-last-call
 [use-last-call]: https://github.com/julesferreira/use-last-call
