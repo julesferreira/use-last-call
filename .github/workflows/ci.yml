@@ -22,7 +22,11 @@ jobs:
         run: npm run lint
       - name: ensure formatting
         run: npm run lint:formatting
-      - name: test
-        run: npm test
       - name: build dist
         run: npm run prepare
+      - name: test
+        run: npm run test:coverage
+      - name: coveralls
+        uses: coverallsapp/github-action@9ba913c152ae4be1327bfb9085dc806cedb44057
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}

@@ -1,4 +1,4 @@
-# [use-last-call]
+# [use-last-call] &middot; [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/julesferreira/use-last-call/ci)](https://github.com/julesferreira/use-last-call/actions/workflows/ci.yml) [![Coveralls](https://img.shields.io/coveralls/github/julesferreira/use-last-call)](https://coveralls.io/github/julesferreira/use-last-call) [![npm bundle size](https://img.shields.io/bundlephobia/minzip/use-last-call?label=min%20%2B%20gzip)](https://bundlephobia.com/package/use-last-call) [![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/julesferreira/use-last-call?color=04a363&label=codefactor)](https://www.codefactor.io/repository/github/julesferreira/use-last-call)
 
 A custom [React Hook] that executes a callback when a user is exiting your app- in both desktop and mobile browsers.
 
