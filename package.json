@@ -2,7 +2,7 @@
   "name": "use-last-call",
   "description": "A custom React Hook that executes a callback when a user is exiting your app- in both desktop and mobile browsers.",
   "license": "MIT",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "main": "dist/useLastCall.js",
   "types": "dist/useLastCall.d.ts",
   "scripts": {
